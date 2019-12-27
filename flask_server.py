@@ -30,7 +30,7 @@ scriptdir = os.path.dirname(__file__)
 
 import uuid
 
-app.secret_key = str(uuid.uuid4())
+app.secret_key = config.get("app_key")
 app.debug = config.get("debug")
 if app.debug:
     app.logger.setLevel(logging.DEBUG)
