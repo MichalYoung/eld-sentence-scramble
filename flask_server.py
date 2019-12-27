@@ -52,7 +52,7 @@ def index():
         return flask.redirect(flask.url_for("choose_level"))
 
     app.logger.debug(f"Level was set to '{level}'")
-    sentence = random.choice(session["sentences"])
+    sentence = load_sentence(level).split()
     app.logger.debug(f"Selected sentence: {sentence}")
     g.sentence = "".join(sentence)
     g.scrambled = scramble(sentence)
@@ -69,42 +69,11 @@ def _choose():
     app.logger.debug("Entering '_choose'")
     try:
         level=request.args.get("level")
-        data = open(f"{scriptdir}/static/data/{level}.txt").readlines()
-        session["sentences"] = [s.split() for s in data if not s.startswith("#")]
         session["level"] = level
         app.logger.debug(f"Redirecting to index, level={level}")
         return flask.redirect(flask.url_for("index"))
     except:
         return flask.redirect(flask.url_for("choose_level"))
-
-
-
-
-###############
-#
-# AJAX request handlers
-#   These return JSON, rather than rendering pages.
-#   (SAMPLE below ... not currently in use in this app)
-#
-###############
-@app.route("/_suggest_completions")
-def suggest_completions():
-    """
-    Up to k suggestions for completing a word
-    """
-    app.logger.debug("Got a JSON request")
-    prefix = request.args.get('prefix', "default", type=str)
-    app.logger.debug(f"Prefix: '{prefix}")
-    app.logger.debug(f"The request object: {request}")
-    app.logger.debug(f"The arguments: '{request.args}")
-    if prefix:
-        app.logger.debug(f"Looking up '{prefix}' in {len(WORDLIST)} words")
-        # completions = get_completions(prefix, 5)
-        app.logger.debug(f"Found completions {completions}")
-    else:
-        app.logger.debug("Didn't have a prefix to look up")
-        completions = []
-    return jsonify(suggestions=completions)
 
 
 #############
@@ -116,6 +85,27 @@ def scramble(sentence: List[str]) -> List[str]:
     while (len(scrambled) > 1 and scrambled == sentence):
         random.shuffle(scrambled)
     return scrambled
+
+def load_sentence(level: str) -> str:
+    """Selects a random sentence from the levels
+    file.
+    Note we read the whole file on each
+    interaction, in preference to making the session
+    object large.   If this becomes a performance issue,
+    we can interpose a database and read a single sentence
+    from it.  It is unlikely to be a problem for level files
+    under several kilobytes.
+    """
+    data = open(f"{scriptdir}/static/data/{level}.txt").readlines()
+    limit = 1000
+    attempts = 1
+    sentence = random.choice(data)
+    while sentence.startswith("#"):
+        attempts += 1
+        assert attempts < limit, "Did not find non-comment line in level file"
+        sentence = random.choice(data)
+    return sentence
+
 
 
 #############
