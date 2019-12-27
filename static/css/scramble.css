@@ -4,18 +4,20 @@
 
 body {
     font-size: x-large;
-    font-family: 'Open Sans',  sans-serif;
+    font-family: 'Raleway', 'Helvetica',   sans-serif;
     background-color: #fafafa;
     padding-left: 10%; 
 }
 
-h1, h2, h3 { font-family: 'Alegreya Sans SC', sans-serif; }
+h1, h2, h3 { font-family: 'Raleway', 'Helvetica', sans-serif; }
 
-div .scrambled {
-    min-height: 30pt;
+div.scrambled {
+    background: #D3E7E9;
+    min-height: 12ex;
 }
-div .ordered {
-    min-height: 30pt;
+div.ordered {
+    background: #fafafa;
+    min-height: 12ex;
 }
 
 .hidden {
