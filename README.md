@@ -20,3 +20,5 @@ would be grammatically
 correct but semantically strange as 
 'The feral princess ate the pretty hog'.
 
+Now running as https://eld-sentence-scramble.herokuapp.com/ , 
+but with a very small set of sample sentences. 
