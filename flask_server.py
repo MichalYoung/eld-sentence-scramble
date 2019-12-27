@@ -1,7 +1,15 @@
 """
-Display poetry with dynamically revealed translation.
-Poetry source is marked up in a simple plain-text format,
-which is converted when the page is served.
+A simple game for English language development students in
+primary school.   English sentences are presented with a
+scrambled word order.  Students click each word to put it in
+correct English order (e.g., adjectives come before nouns).
+
+Note that "correctness" is a simple equality check with the source
+sentence from one of the 'level' files in static/data.  If there is
+more than one correct order, alternatives will be rejected.  To
+avoid this, create sample sentences with semantic constraints, e.g.,
+'The feral hog ate the pretty princess' would be grammatically
+correct but semantically strange as 'The feral princess ate the pretty hog'.
 """
 import config
 
@@ -28,14 +36,18 @@ scriptdir = os.path.dirname(__file__)
 import uuid
 
 app.secret_key = str(uuid.uuid4())
-app.debug = config.DEBUG
-app.logger.setLevel(logging.DEBUG)
+app.debug = config.get("debug")
+if app.debug:
+    app.logger.setLevel(logging.DEBUG)
+else:
+    app.logger.setLevel(logging.INFO)
 
 ##############
 # URL routing
 ###############
 
 @app.route("/")
+@app.route("/index")
 def index():
     app.logger.debug("Entering index")
     level = session.get("level")
@@ -60,15 +72,15 @@ def choose_level():
 def _choose():
     """Pick a level (== a list of sentences to scramble)"""
     app.logger.debug("Entering '_choose'")
-    level=request.args.get("level")
-    data = open(f"{scriptdir}/static/data/{level}.txt").readlines()
-    session["sentences"] = [s.split() for s in data if not s.startswith("#")]
-    session["level"] = level
-    app.logger.debug(f"Redirecting to index, level={level}")
-    return flask.redirect(flask.url_for("index"))
-
-
-
+    try:
+        level=request.args.get("level")
+        data = open(f"{scriptdir}/static/data/{level}.txt").readlines()
+        session["sentences"] = [s.split() for s in data if not s.startswith("#")]
+        session["level"] = level
+        app.logger.debug(f"Redirecting to index, level={level}")
+        return flask.redirect(flask.url_for("index"))
+    except:
+        return flask.redirect(flask.url_for("choose_level"))
 
 
 
@@ -77,6 +89,7 @@ def _choose():
 #
 # AJAX request handlers
 #   These return JSON, rather than rendering pages.
+#   (SAMPLE below ... not currently in use in this app)
 #
 ###############
 @app.route("/_suggest_completions")
@@ -118,7 +131,7 @@ if __name__ == "__main__":
     import uuid
 
     app.secret_key = str(uuid.uuid4())
-    app.debug = config.DEBUG
+    app.debug = config.get("debug")
     app.logger.setLevel(logging.DEBUG)
     app.run(port=config.PORT)
 
