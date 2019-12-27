@@ -4,12 +4,7 @@ primary school.   English sentences are presented with a
 scrambled word order.  Students click each word to put it in
 correct English order (e.g., adjectives come before nouns).
 
-Note that "correctness" is a simple equality check with the source
-sentence from one of the 'level' files in static/data.  If there is
-more than one correct order, alternatives will be rejected.  To
-avoid this, create sample sentences with semantic constraints, e.g.,
-'The feral hog ate the pretty princess' would be grammatically
-correct but semantically strange as 'The feral princess ate the pretty hog'.
+
 """
 import config
 
