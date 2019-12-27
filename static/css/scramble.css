@@ -1,0 +1,48 @@
+/* 
+ * Styles for word scramble game
+ */
+
+body {
+    font-size: x-large;
+    font-family: 'Open Sans',  sans-serif;
+    background-color: #fafafa;
+    padding-left: 10%; 
+}
+
+h1, h2, h3 { font-family: 'Alegreya Sans SC', sans-serif; }
+
+div .scrambled {
+    min-height: 30pt;
+}
+div .ordered {
+    min-height: 30pt;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.word { outline: 1pt solid #dddddd;
+        display: inline-block;
+        text-align: center;
+        padding: 2pt;
+        min-width: 2em;
+    }
+
+.word:hover { outline: 1pt solid black; }
+
+.es { color: black; display: inline; }
+.en { color: red; display: inline; }
+
+.chunk {
+   display: inline-flex;
+    flex-direction: column;
+}
+
+.es.translated {
+    border: 1px solid #485F6E;
+}
+
+.es:hover {
+     border: 1px solid #485F6E;
+}

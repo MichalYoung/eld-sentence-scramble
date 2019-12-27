@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <title>Unscramble</title>
+<meta charset="utf-8" />
+  <!-- Web font loading must precede stylesheet link -->
+<link
+href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:500|Open+Sans&display=swap"
+rel="stylesheet">  
+  <link rel="stylesheet" href="{{url_for("static", filename="css/scramble.css")}}">
+  <script src="{{ url_for("static", filename="js/jquery-3.4.0.js")}}"></script>
+  <script src="{{ url_for("static", filename="js/scramble.js")}}"></script>
+
+
+</head>
+
+<body>
+
+<div class="ordered"> &nbsp;
+    <h3>English sentence:</h3>
+    <p id="ordered"></p>
+</div>
+
+
+
+<div class="scrambled">
+    <h3>Select words in order:</h3>
+    <p id="scrambled">
+        {% for word in g.scrambled %}
+        <span class="word">{{ word }}</span>
+        {% endfor %}
+    </p>
+</div>
+
+<div class="hidden reward">
+    <img src="/static/img_rewards/boom.png" />
+    <br />
+    <p><a href="/">Next</a>
+        <span style="text-align: right; min-width: 10em;">
+            <a href="choose">Level Up</a></span>
+    </p>
+</div>
+
+<script>
+
+var sentence="{{g.sentence}}";
+
+$(document).ready(function(){
+
+    $("#scrambled").on("click",  ".word",
+        function(){
+            console.log("Ordering '" + $(this).text() + "'");
+            // Place into ordered word list
+            $("#ordered").append(
+                "<span class=\"word\">"
+                + $(this).html()
+                + "</span>");
+            $(this).remove();
+            var ordered = $("#ordered").text().trim();
+            console.log("'" + ordered + "'");
+            console.log("Vs sought sentence '" + sentence + "'");
+            if (ordered == sentence) {
+                console.log("Matched!");
+                $(".scrambled").addClass("hidden");
+                $(".reward").removeClass("hidden");
+            }
+
+    });
+
+    $("#ordered").on("click",  ".word",
+        function(){
+            console.log("Removing '" + $(this).text() + "'");
+            // Place into scrambled word list
+            $("#scrambled").append(
+                "<span class=\"word\">"
+                + $(this).html()
+                + "</span>");
+            $(this).remove();
+            console.log($("#ordered").text());
+
+
+    });
+
+
+
+});
+</script>
+
+</body> </html>
